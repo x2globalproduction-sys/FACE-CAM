@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TYRONEX PRODUCTION - Face-Cam Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="logo-container">
+      <img src="https://i.postimg.cc/ncYCzHKZ/new-logo-1.png" alt="Logo">
+      <h1>TYRONEX PRODUCTION</h1>
+    </div>
+  </header>
+
+  <div class="container" style="max-width: 400px; margin: 50px auto; background: var(--panel-bg); padding: 25px; border-radius: 8px;">
+    <h2>Talent Portal Login</h2>
+    <form id="login-form">
+      <div style="margin-bottom: 15px;">
+        <label>UID:</label><br>
+        <input type="text" id="uid" required style="width: 100%; padding: 8px; background: #000; border: 1px solid var(--border-color); color: #fff;">
+      </div>
+      <div style="margin-bottom: 15px;">
+        <label>IGN (In-Game Name):</label><br>
+        <input type="text" id="ign" required style="width: 100%; padding: 8px; background: #000; border: 1px solid var(--border-color); color: #fff;">
+      </div>
+      <div style="margin-bottom: 15px;">
+        <label>Secret Number:</label><br>
+        <input type="password" id="secret" required style="width: 100%; padding: 8px; background: #000; border: 1px solid var(--border-color); color: #fff;">
+      </div>
+      <button type="submit" style="width: 100%; padding: 10px; background: var(--accent-red); color: #fff; border: none; font-weight: bold; cursor: pointer;">Connect Face-Cam</button>
+    </form>
+    <div id="status-panel" style="margin-top: 15px; display:none;">
+      <p>Status: <span id="cam-status" style="color: var(--accent-green); font-weight:bold;">LIVE ON TIME</span></p>
+      <video id="local-video" autoplay muted playsinline style="width:100%; border: 1px solid var(--border-color); margin-top:10px;"></video>
+    </div>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const uid = document.getElementById('uid').value;
+      const ign = document.getElementById('ign').value;
+      const secret = document.getElementById('secret').value;
+
+      socket.emit('talent-login', { uid, ign, secret }, async (res) => {
+        if(res.success) {
+          document.getElementById('login-form').style.display = 'none';
+          document.getElementById('status-panel').style.display = 'block';
+          
+          try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            document.getElementById('local-video').srcObject = stream;
+          } catch (err) {
+            alert("Camera permission denied or not found!");
+          }
+        }
+      });
+    });
+
+    socket.on('trigger-alarm', (data) => {
+      alert("ALARM FROM ADMIN: " + data.message);
+      // Play audio alarm tone
+      const audio = new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
+      audio.loop = true;
+      audio.play();
+      if(confirm("Click OK to acknowledge alarm & silence.")) {
+        audio.pause();
+      }
+    });
+  </script>
+</body>
+</html>

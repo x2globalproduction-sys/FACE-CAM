@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TYRONEX PRODUCTION - Dedicated Stream</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body style="display:flex; justify-content:center; align-items:center; height:100vh; margin:0;">
+  <div style="width: 800px; background:var(--panel-bg); border:1px solid var(--border-color); padding:10px; border-radius:6px;">
+    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+      <span id="stream-title" style="font-weight:bold;">Loading stream...</span>
+      <div>
+        <button style="background:#333; color:#fff; border:none; padding:4px 8px;">Local muted</button>
+        <button style="background:#2ecc71; color:#fff; border:none; padding:4px 8px;">Done framing</button>
+      </div>
+    </div>
+    <video id="remote-video" autoplay playsinline style="width:100%; background:#000; height:450px; object-fit:cover;"></video>
+  </div>
+</body>
+</html>
